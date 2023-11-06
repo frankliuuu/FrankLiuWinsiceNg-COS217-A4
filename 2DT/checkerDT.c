@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* checkerDT.c                                                        */
-/* Author:                                                            */
+/* Author: Frank Liu & Winsice Ng                                     */
 /*--------------------------------------------------------------------*/
 
 #include <assert.h>
@@ -10,6 +10,32 @@
 #include "dynarray.h"
 #include "path.h"
 
+/* Iterates through oNNode's children and returns TRUE if 
+   there are no duplicate paths. Return FALSE otherwise. */
+static boolean CheckerDT_noDupPath(Node_T oNNode) {
+      size_t tempChildIndex; 
+      Node_T thisChild = NULL; 
+      Node_T nextChild = NULL;
+      for (tempChildIndex = 0; tempChildIndex < Node_getNumChildren(oNNode) - 1; tempChildIndex++) {
+            int status1 = Node_getChild(oNNode, tempChildIndex, &thisChild);
+            int status2 = Node_getChild(oNNode, tempChildIndex+1, &nextChild);
+            if (status1 != SUCCESS || status2!= SUCCESS ) {
+               fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+               return FALSE;
+            }
+            Path_T currPath = Node_getPath(thisChild); 
+            Path_T nextPath = Node_getPath(nextChild); 
+
+            if (Path_comparePath(currPath, nextPath) == 0) {
+                  return FALSE;
+            } 
+            /*else if (Path_comparePath(currPath, nextPath) > 0) 
+               fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+               return FALSE; */ 
+         }
+
+   return TRUE; 
+}
 
 
 /* see checkerDT.h for specification */
@@ -64,13 +90,18 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
       /* Recur on every child of oNNode */
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
       {
-         Node_T oNChild = NULL;
+         Node_T oNChild = NULL; 
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
-
+         
          if(iStatus != SUCCESS) {
             fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
             return FALSE;
          }
+
+      if (!CheckerDT_noDupPath(oNNode)) {
+            fprintf(stderr, "two children of the same parent have the same path\n");
+            return FALSE;
+      }
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
