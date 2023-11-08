@@ -146,6 +146,27 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
+1. Modularity
 
+2. The arguments for the functions for nodeDT are not in consistent DT_preOrderTraversal
+      across all functions. Looking at these two function declarations
+      int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult); 
+      boolean Node_hasChild(Node_T oNParent, Path_T oPPath, 
+            size_t *pulChildID);
+      Node_new() follows path, parent, pointer while Node_hasChild()
+      follows parent, path, pointer. The ordering of the variables
+       parent and path are not consistent. 
+
+3. #include <stddef.h> does not need to be included in both .h and .c fules
+      (e.g. nodeDTGood.c and dt.h)
+
+4. Function comments go with the function declarations in the .h header file.
+      they do not not need to be repeated before the functions in 
+      the source code (e.g. Node_new function)
+
+5. Functions can have more assert statements to check their arguments.
+      For example, In dtGood.c, the function DT_preOrderTraversal can 
+      have an assert statement that aborts if Node_T n is null, 
+      rather than the if statement it currently has. 
 
 ------------------------------------------------------------------------
