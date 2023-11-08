@@ -85,7 +85,7 @@ size_t Path_getDepth(Path_T oPPath);
 */
 size_t Path_getSharedPrefixDepth(Path_T oPPath1, Path_T oPPath2);
 
-/*
+/*  
   Returns the string version of the component of oPPath at level
   ulLevel. This count is from 0, so with level 0 the root of oPPath
   would be returned.
