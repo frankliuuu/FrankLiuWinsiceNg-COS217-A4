@@ -14,10 +14,11 @@
 #include "nodeFT.h"
 #include "ft.h"
 
-
 /*
-  A Directory Tree is a representation of a hierarchy of directories,
-  represented as an AO with 3 state variables:
+  A File Tree is a representation of a hierarchy of directories and
+  files, represented as an AO with 3 state variables: the File Tree is 
+  rooted at a directory, directories may be internal nodes or leaves,
+   and files are always leaves. 
 */
 
 /* 1. a flag for being in an initialized state (TRUE) or not (FALSE) */
@@ -27,13 +28,13 @@ static Node_T oNRoot;
 /* 3. a counter of the number of nodes in the hierarchy */
 static size_t ulCount;
 
-
 /* --------------------------------------------------------------------
 
   The DT_traversePath and DT_findNode functions modularize the common
   functionality of going as far as possible down an DT towards a path
   and returning either the node of however far was reached or the
   node if the full path was reached, respectively.
+
 */
 
 /*
@@ -45,6 +46,7 @@ static size_t ulCount;
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
 */
+
 static int DT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
    int iStatus;
    Path_T oPPrefix = NULL;
@@ -353,6 +355,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
       }
    }
 
+
    /* starting at oNCurr, build rest of the path one level at a time */
    while(ulIndex <= ulDepth) {
       Path_T oPPrefix = NULL;
@@ -367,6 +370,8 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
          assert(CheckerDT_isValid(bIsInitialized, oNRoot, ulCount));
          return iStatus;
       }
+
+      /* CHANGE HERE - happens at every level, not everything inserted will be afile, need to check by seeing if ur at the laast node or second to last node*/
 
       /* insert the new node for this level */
       iStatus = Node_newFile(oPPrefix, oNCurr, &oNNewNode, pvContents, uLength);
