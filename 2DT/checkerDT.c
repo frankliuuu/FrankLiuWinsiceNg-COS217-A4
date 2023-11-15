@@ -120,11 +120,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, size_t* pNodeCount, size_t ulC
          if(!CheckerDT_treeCheck(oNChild, pNodeCount, ulCount))
             return FALSE;
       }
-
-      if ((*pNodeCount) != ulCount) {
-         fprintf(stderr, "Number of nodes in the tree is not equal to the tree's count\n");
-         return FALSE;
-      }
+   
 
    }
    return TRUE;
@@ -144,5 +140,12 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
          return FALSE;
       }
    /* Now checks invariants recursively at each node from the root. */
-   return CheckerDT_treeCheck(oNRoot, pNodeCount, ulCount);
+   if (!CheckerDT_treeCheck(oNRoot, pNodeCount, ulCount))
+      return FALSE; 
+   if ((*pNodeCount) != ulCount) {
+      fprintf(stderr, "Number of nodes in the tree is not equal to the tree's count, %ld, %ld\n", *pNodeCount, ulCount);
+      return FALSE;
+   }
+   return TRUE; 
+   
 }
