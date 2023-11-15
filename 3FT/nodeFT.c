@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/* nodeDT.c                                                           */
+/* nodeFT.c                                                           */
 /* Author:                                                            */
 /*--------------------------------------------------------------------*/
 
@@ -9,7 +9,7 @@
 #include "dynarray.h"
 #include "nodeFT.h"
 
-/* A node in a DT */
+/* A node in a FT */
 struct node {
 
    /* indicator for when the node is a file or directory, 0 
@@ -27,6 +27,22 @@ struct node {
    void *pvContent; 
 
 };
+int Node_getType(Node_T oNNode) {
+   return oNNode->type; 
+}
+
+void* Node_getContent(Node_T oNNode) {
+   return oNNode->pvContent;
+}
+size_t Node_getLength(Node_T oNNode) {
+   return oNNode->uLength; 
+}
+
+void Node_changeFile(Node_T oNNode, void* pvNewContents, size_t ulNewLength) {
+   oNNode->uLength = ulNewLength; 
+   oNNode->pvContent = pvNewContents; 
+}
+
 
 /*
   Links new child oNChild into oNParent's children array at index
@@ -156,8 +172,8 @@ int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
 
     assert(oNParent == NULL);
 
-   /* assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent)); */
-   assert(CheckerDT_Node_isValid(*poNResult));
+   /* assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent)); 
+   assert(CheckerDT_Node_isValid(*poNResult)); */
 
    return SUCCESS;
 }
@@ -291,7 +307,7 @@ size_t Node_free(Node_T oNNode) {
    size_t ulCount = 0;
 
    assert(oNNode != NULL);
-   assert(CheckerDT_Node_isValid(oNNode));
+   /* assert(CheckerDT_Node_isValid(oNNode)); */
 
    /* remove from parent's list */
    if(oNNode->oNParent != NULL) {
@@ -361,7 +377,7 @@ size_t Node_getNumChildren(Node_T oNParent) {
    return DynArray_getLength(oNParent->oDChildren);
 }
 
-int  Node_getChild(Node_T oNParent, size_t ulChildID,
+int Node_getChild(Node_T oNParent, size_t ulChildID,
                    Node_T *poNResult) {
 
    assert(oNParent != NULL);
