@@ -74,13 +74,21 @@ None
 Student 1: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-No 
+This assignment helped me learn and use GDB better. It also helped
+me read through code and understand how different data types and 
+abstractions work together to serve a use. This assignment took 
+quite a deal of time, so it was defintiely tedious. I also better
+understand ADT's and AO's as well as writing better code that 
+has modularity and encapsulation. Not to mention, I now have an idea 
+of how filetrees are built. 
 
 ------------------------------------------------------------------------
 Student 2: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-No 
+It was helpful as I got to practice reading code and debugging. I also
+learned how ADT's work in regards with other files which helped me 
+understand modularity and encapsulation better. 
 
 ------------------------------------------------------------------------
 (optional) What information can you provide about your submission that
@@ -95,7 +103,7 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
-
+None. 
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on checkerDT.c, and what are your
@@ -103,7 +111,7 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
-
+None.
 
 ------------------------------------------------------------------------
 What warnings does splint generate on your Part 3 code, and what are
@@ -111,7 +119,13 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+nodeFT.h:123:5: Function exported but not used outside nodeFT: Node_compare
+nodeFT.c:399:1: Definition of Node_compare
 
+Although Node_compare is not used outside of nodeFt, it's something that the module
+might naturally have as part of its interface even though we don't happen to use it.
+Thus, we decided to keep it as a nonstatic method rather than making it static 
+to fix the error. 
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on your Part 3 code, and what are
@@ -119,6 +133,20 @@ your disagreements with them? Copy the critTer warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+      ft.c: line 305: medium priority:
+      Do you want to validate 'pvContents' through an assert?
+   
+      ft.c: line 459: medium priority:
+      Do you want to validate 'pvNewContents' through an assert?
+   
+      nodeFT.c: line 164: medium priority:
+      Do you want to validate 'pvContent' through an assert?
+   
+      nodeFT.c: line 372: medium priority:
+      Do you want to validate 'pvNewContents' through an assert?
+
+      We disagree with the assert because pvContents can be 
+      NULL because NULL content can be put into files. 
 
 
 ------------------------------------------------------------------------
@@ -146,7 +174,8 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
-1. Modularity
+1. Modularity: For example, Node_new in nodeDTGood.c can be chunked apart into private
+               helper methods. 
 
 2. The arguments for the functions for nodeDT are not in consistent DT_preOrderTraversal
       across all functions. Looking at these two function declarations

@@ -87,7 +87,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
          *poNFurthest = NULL;
          return iStatus;
       }
-      if(Node_hasChild(oNCurr, oPPrefix, &ulChildID)) {
+      if(Node_hasChild(oPPrefix, oNCurr, &ulChildID)) {
          /* go to that child and continue with next prefix */
          Path_free(oPPrefix);
          oPPrefix = NULL;
@@ -111,7 +111,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
 }
 
 /*
-  Traverses the FT to find a node of type 0/directory or type 1/file 
+  Traverses the FT to find a node of type 0/directory or type 1/file
   with absolute path pcPath. Returns a
   int SUCCESS status and sets *poNResult to be the node, if found.
   Otherwise, sets *poNResult to NULL and returns with status:
@@ -121,7 +121,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
   * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
   * MEMORY_ERROR if memory could not be allocated to complete request
   * NOT_A_DIRECTORY if node is a file when function deals with directory
-  * NOT_A_FILE if node is a directory when function deals with file. 
+  * NOT_A_FILE if node is a directory when function deals with file.
   */
 static int FT_findNode(const char *pcPath, Node_T *poNResult, int type) {
    Path_T oPPath = NULL;
@@ -168,7 +168,7 @@ static int FT_findNode(const char *pcPath, Node_T *poNResult, int type) {
       return NOT_A_DIRECTORY;
    }
 
-    /* dealing with file but given node is a directory */
+   /* dealing with file but given node is a directory */
    if (type >= 0 && type > Node_getType(oNFound)) {
       *poNResult = NULL;
       return NOT_A_FILE;
@@ -190,7 +190,7 @@ int FT_insertDir(const char *pcPath) {
    size_t ulNewNodes = 0;
 
    assert(pcPath != NULL);
-   
+
    /* validate pcPath and generate a Path_T for it */
    if(!bIsInitialized)
       return INITIALIZATION_ERROR;
@@ -287,7 +287,7 @@ int FT_rmDir(const char *pcPath) {
    Node_T oNFound = NULL;
 
    assert(pcPath != NULL);
-   
+
    iStatus = FT_findNode(pcPath, &oNFound, 0);
 
    if(iStatus != SUCCESS)
@@ -366,7 +366,8 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
       }
       /* Creates and add file to the last directory of oPPath */
       if (ulIndex == ulDepth) {
-         iStatus = Node_newFile(oPPrefix, oNCurr, &oNNewNode, pvContents, ulLength);
+         iStatus = Node_newFile(oPPrefix, oNCurr,
+                                &oNNewNode, pvContents, ulLength);
          if(iStatus != SUCCESS) {
             Path_free(oPPath);
             Path_free(oPPrefix);
@@ -487,6 +488,9 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    Node_T oNFound = NULL;
 
    assert(pcPath != NULL);
+   assert(pbIsFile != NULL);
+   assert(pulSize != NULL);
+
    /* Type -1 corresponds to FT_stat calling FT_findNode where node type does not matter.*/
    iStatus = FT_findNode(pcPath, &oNFound, -1);
    if(iStatus != SUCCESS)

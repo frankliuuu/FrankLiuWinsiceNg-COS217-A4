@@ -65,7 +65,7 @@ Path_T Node_getPath(Node_T oNNode);
   such a child, stores in *pulChildID the identifier that such a
   child _would_ have if inserted.
 */
-boolean Node_hasChild(Node_T oNParent, Path_T oPPath,
+boolean Node_hasChild(Path_T oPPath, Node_T oNParent, 
                          size_t *pulChildID);
 
 /* Returns the number of children that oNParent has. Otherwise,
@@ -98,13 +98,14 @@ int Node_getType(Node_T oNNode);
 
 /*
   Returns void pointer to oNNode's file 
-  contents.
+  contents or NULL if oNNode is not a file. 
 */
 void* Node_getContent(Node_T oNNode);
 
 /*
   Returns the size in bytes of oNNode's file
-  contents. 
+  contents. Otherwise, returns status
+  *NOT_A_FILE if oNNode is a directory and not a file
 */
 size_t Node_getLength(Node_T oNNode);
 

@@ -80,17 +80,16 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 }
 
 /*
-  Performs a pre-order traversal of the tree rooted at oNNode.
+  Performs a pre-order traversal of the tree rooted at oNNode. Counts number
+  of nodes in tree and puts into pNodeCount
   Returns FALSE if a broken invariant is found and
-  returns TRUE otherwise.
-
-  You may want to change this function's return type or
-  parameter list to facilitate constructing your checks.
-  If you do, you should update this function comment.
+  returns TRUE otherwise. 
 */
-static boolean CheckerDT_treeCheck(Node_T oNNode, size_t* pNodeCount, size_t ulCount) {
+static boolean CheckerDT_treeCheck(Node_T oNNode, size_t* pNodeCount) {
    size_t ulIndex;
 
+   assert(pNodeCount != NULL); 
+   
    if(oNNode!= NULL) {
 
       (*pNodeCount)++;
@@ -117,7 +116,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, size_t* pNodeCount, size_t ulC
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
-         if(!CheckerDT_treeCheck(oNChild, pNodeCount, ulCount))
+         if(!CheckerDT_treeCheck(oNChild, pNodeCount))
             return FALSE;
       }
    
@@ -140,10 +139,11 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
          return FALSE;
       }
    /* Now checks invariants recursively at each node from the root. */
-   if (!CheckerDT_treeCheck(oNRoot, pNodeCount, ulCount))
+   if (!CheckerDT_treeCheck(oNRoot, pNodeCount))
       return FALSE; 
+   /* Confirms the tree's count after traversing the entire tree */
    if ((*pNodeCount) != ulCount) {
-      fprintf(stderr, "Number of nodes in the tree is not equal to the tree's count, %ld, %ld\n", *pNodeCount, ulCount);
+      fprintf(stderr, "Number of nodes in the tree is not equal to the tree's count \n"); 
       return FALSE;
    }
    return TRUE; 

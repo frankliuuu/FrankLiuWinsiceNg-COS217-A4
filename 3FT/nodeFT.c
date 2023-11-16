@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* nodeFT.c                                                           */
-/* Author:                                                            */
+/* Author: Frank Liu and Winsice Ng                                   */
 /*--------------------------------------------------------------------*/
 
 #include <stdlib.h>
@@ -114,7 +114,7 @@ int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
       }
 
       /* parent must not already have child with this path */
-      if(Node_hasChild(oNParent, oPPath, &ulIndex)) {
+      if(Node_hasChild(oPPath, oNParent, &ulIndex)) {
          Path_free(psNew->oPPath);
          free(psNew);
          *poNResult = NULL;
@@ -216,7 +216,7 @@ int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
       }
 
       /* parent must not already have child with this path */
-      if(Node_hasChild(oNParent, oPPath, &ulIndex)) {
+      if(Node_hasChild(oPPath, oNParent, &ulIndex)) {
          Path_free(psNew->oPPath);
          free(psNew);
          *poNResult = NULL;
@@ -305,7 +305,7 @@ Path_T Node_getPath(Node_T oNNode) {
    return oNNode->oPPath;
 }
 
-boolean Node_hasChild(Node_T oNParent, Path_T oPPath,
+boolean Node_hasChild(Path_T oPPath, Node_T oNParent,
                       size_t *pulChildID) {
    assert(oNParent != NULL);
    assert(oPPath != NULL);
@@ -359,17 +359,34 @@ Node_T Node_getParent(Node_T oNNode) {
 }
 
 int Node_getType(Node_T oNNode) {
+   assert(oNNode != NULL);
    return oNNode->type;
 }
 
 void* Node_getContent(Node_T oNNode) {
+   assert(oNNode != NULL);
+
+   if(oNNode->type != 1) {
+      return NULL;
+   }
+
    return oNNode->pvContent;
 }
 size_t Node_getLength(Node_T oNNode) {
+   assert(oNNode != NULL);
+
+   if(oNNode->type != 1) {
+      return NOT_A_FILE;
+   }
+
    return oNNode->uLength;
 }
 
 void Node_changeFile(Node_T oNNode, void* pvNewContents, size_t ulNewLength) {
+   assert(oNNode != NULL);
+
+   assert(oNNode->type == 1);
+
    oNNode->uLength = ulNewLength;
    oNNode->pvContent = pvNewContents;
 }
