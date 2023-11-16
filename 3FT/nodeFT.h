@@ -14,20 +14,9 @@
 /* A Node_T is a node in a Directory Tree */
 typedef struct node *Node_T;
 
-int Node_getType(Node_T oNNode); 
-void* Node_getContent(Node_T oNNode);
-size_t Node_getLength(Node_T oNNode);
-void Node_changeFile(Node_T oNNode, void* pvNewContents, size_t ulNewLength); 
-
-int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult); 
-
-int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
- void *pvContent, size_t uLength); 
-
-
 /*
-  Creates a new node in the Directory Tree, with path oPPath and
-  parent oNParent. Returns an int SUCCESS status and sets *poNResult
+  Creates a new node that is a directory in the File Tree, with path oPPath
+   and parent oNParent. Returns an int SUCCESS status and sets *poNResult
   to be the new node if successful. Otherwise, sets *poNResult to NULL
   and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
@@ -36,8 +25,26 @@ int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
                  or oNParent's path is not oPPath's direct parent
                  or oNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oNParent already has a child with this path
+  * NOT_A_DIRECTORY if oNParent is a file and not a directory 
 */
-/* int Node_new(Path_T oPPath, Node_T oNParent, Node_T *poNResult); */
+int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult); 
+
+/*
+  Creates a new node that is a file in the File Tree, with path oPPath,
+  parent oNParent, void pointer pvContent that holds the contents of the
+  file, and the size of the file content uLength. Returns an int SUCCESS 
+  status and sets *poNResult to be the new node if successful. Otherwise,
+   sets *poNResult to NULL and returns status:
+  * MEMORY_ERROR if memory could not be allocated to complete request
+  * CONFLICTING_PATH if oNParent's path is not an ancestor of oPPath
+  * NO_SUCH_PATH if oPPath is of depth 0
+                 or oNParent's path is not oPPath's direct parent
+                 or oNParent is NULL but oPPath is not of depth 1
+  * ALREADY_IN_TREE if oNParent already has a child with this path
+  * NOT_A_DIRECTORY if oNParent is a file and not a directory 
+*/
+int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
+ void *pvContent, size_t uLength); 
 
 /*
   Destroys and frees all memory allocated for the subtree rooted at
@@ -51,7 +58,7 @@ Path_T Node_getPath(Node_T oNNode);
 
 /*
   Returns TRUE if oNParent has a child with path oPPath. Returns
-  FALSE if it does not.
+  FALSE if it does not or if oNParent is a file and not a directory.
 
   If oNParent has such a child, stores in *pulChildID the child's
   identifier (as used in Node_getChild). If oNParent does not have
@@ -61,7 +68,10 @@ Path_T Node_getPath(Node_T oNNode);
 boolean Node_hasChild(Node_T oNParent, Path_T oPPath,
                          size_t *pulChildID);
 
-/* Returns the number of children that oNParent has. */
+/* Returns the number of children that oNParent has. Otherwise,
+   returns status: 
+   * NOT_A_DIRECTORY if oNParent is a file and not a directory
+ */
 size_t Node_getNumChildren(Node_T oNParent);
 
 /*
@@ -69,6 +79,7 @@ size_t Node_getNumChildren(Node_T oNParent);
   node of oNParent with identifier ulChildID, if one exists.
   Otherwise, sets *poNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oNParent
+  * NOT_A_DIRECTORY if oNParent is a file and not a directory
 */
 int Node_getChild(Node_T oNParent, size_t ulChildID,
                   Node_T *poNResult);
@@ -78,6 +89,30 @@ int Node_getChild(Node_T oNParent, size_t ulChildID,
   Returns NULL if oNNode is the root and thus has no parent.
 */
 Node_T Node_getParent(Node_T oNNode);
+
+
+/* Returns 0 if oNNode is a directory and 1
+   if it is a file. 
+*/
+int Node_getType(Node_T oNNode); 
+
+/*
+  Returns void pointer to oNNode's file 
+  contents.
+*/
+void* Node_getContent(Node_T oNNode);
+
+/*
+  Returns the size in bytes of oNNode's file
+  contents. 
+*/
+size_t Node_getLength(Node_T oNNode);
+
+/*
+  Replaces file oNNode's contents with the parameter
+  pvNewContents of size ulNewLength bytes.
+*/
+void Node_changeFile(Node_T oNNode, void* pvNewContents, size_t ulNewLength); 
 
 /*
   Compares oNFirst and oNSecond lexicographically based on their paths.

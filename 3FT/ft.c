@@ -442,6 +442,7 @@ void *FT_getFileContents(const char *pcPath) {
    Path_T oPPath = NULL;
    Node_T oNCurr = NULL;
 
+   assert(pcPath != NULL);
 
    iStatus = Path_new(pcPath, &oPPath);
    iStatus= FT_traversePath(oPPath, &oNCurr);
@@ -461,6 +462,8 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
    void *pvRemContent;
    Path_T oPPath = NULL;
    Node_T oNCurr = NULL;
+
+   assert(pcPath != NULL);
 
    iStatus = Path_new(pcPath, &oPPath);
    iStatus= FT_traversePath(oPPath, &oNCurr);

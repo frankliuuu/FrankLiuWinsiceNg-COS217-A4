@@ -26,38 +26,24 @@ int main(void) {
      * contains* should return FALSE
      * toString should return NULL.
   */
-  printf("before \n");
   assert(FT_insertDir("1root/2child/3gkid") == INITIALIZATION_ERROR);
-  printf("insertdir before init works \n"); 
   assert(FT_containsDir("1root/2child/3gkid") == FALSE);
-  printf("containsdir before init works \n"); 
   assert(FT_rmDir("1root/2child/3gkid") == INITIALIZATION_ERROR);
-  printf("rmDirbefore init works \n"); 
   assert(FT_insertFile("1root/2child/3gkid/4ggk",NULL,0) ==
          INITIALIZATION_ERROR);
-  printf("insertFile before init works \n"); 
   assert(FT_containsFile("1root/2child/3gkid/4ggk") == FALSE);
-  printf("containsFile before init works \n"); 
   assert(FT_rmFile("1root/2child/3gkid/4ggk") == INITIALIZATION_ERROR);
-  printf("rmFile before init works \n"); 
   assert((temp = FT_toString()) == NULL);
-  printf("toString before init works \n"); 
   assert(FT_destroy() == INITIALIZATION_ERROR);
-  printf("destroy before init works \n"); 
   /* After initialization, the data structure is empty, so
      contains* should still return FALSE for any non-NULL string,
      and toString should return the empty string.
   */
   assert(FT_init() == SUCCESS);
-  printf("init works \n"); 
   assert(FT_containsDir("1root/2child/3gkid") == FALSE);
-  printf("containsDir, init, false works \n"); 
   assert(FT_containsFile("1root/2child/3gkid/4ggk") == FALSE);
-  printf("containsFile, init, false works \n");
   assert((temp = FT_toString()) != NULL);
-  printf("toString,init, contains nothing works \n"); 
   assert(!strcmp(temp,""));
-  printf("strcmp, init, contains nothing works \n"); 
   free(temp);
 
   /* A valid path must not:
@@ -74,11 +60,9 @@ int main(void) {
   assert(FT_insertFile("/1root/2child", NULL, 0) == BAD_PATH);
   assert(FT_insertFile("1root/2child/", NULL, 0) == BAD_PATH);
   assert(FT_insertFile("1root//2child", NULL, 0) == BAD_PATH);
-  printf("insertFile, badpath case works \n"); 
 
   /* putting a file at the root is illegal */
   assert(FT_insertFile("A",NULL,0) == CONFLICTING_PATH);
-  printf("file at root is illegal works \n"); 
 
   /* After insertion, the data structure should contain every prefix
      of the inserted path, toString should return a string with these
@@ -105,7 +89,6 @@ int main(void) {
   assert(FT_insertDir("1otherroot") == CONFLICTING_PATH);
   assert(FT_insertDir("1otherroot/2d") == CONFLICTING_PATH);
   assert(FT_insertFile("1otherroot/2f", NULL, 0) == CONFLICTING_PATH);
-  printf("good before three children insert \n");
 
   /* Trying to insert a third child should succeed, unlike in BDT */
   assert(FT_insertFile("1root/2third", NULL, 0) == SUCCESS);
@@ -121,7 +104,6 @@ int main(void) {
   assert((temp = FT_toString()) != NULL);
   fprintf(stderr, "Checkpoint 1:\n%s\n", temp);
   free(temp);
-  printf("check point 1 good \n");
 
   /* Children must be unique, but individual directories or files
      in different paths needn't be
@@ -142,7 +124,6 @@ int main(void) {
   assert((temp = FT_toString()) != NULL);
   fprintf(stderr, "Checkpoint 2:\n%s\n", temp);
   free(temp);
- printf("check point 2 good \n");
 
   /* Attempting to insert a child of a file is illegal */
   assert(FT_insertDir("1root/2third/3nopeD") == NOT_A_DIRECTORY);
@@ -150,7 +131,6 @@ int main(void) {
   assert(FT_insertFile("1root/2third/3nopeF", NULL, 0) ==
          NOT_A_DIRECTORY);
   assert(FT_containsFile("1root/2third/3nopeF") == FALSE);
-  printf("insert child to file illegal works  \n");
 
 
   /* calling rm* on a path that doesn't exist should return
@@ -174,7 +154,6 @@ int main(void) {
   assert((temp = FT_toString()) != NULL);
   fprintf(stderr, "Checkpoint 3:\n%s\n", temp);
   free(temp);
-  printf("good checkpoint 3 print  \n");
 
   /* removing the root doesn't uninitialize the structure */
   assert(FT_rmDir("1anotherroot") == CONFLICTING_PATH);

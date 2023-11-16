@@ -8,3 +8,8 @@ whenever looking at children, check if it is file or directory.
 insertFile 
     - actions inside while loop happen at evey level
     - we just want to insert file at end of oppath. 
+
+
+do we have to allocate memory for file contents and size? 
+
+for getlength, getcontents, changefile, do we have to check if it is a file? 
