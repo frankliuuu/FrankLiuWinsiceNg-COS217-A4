@@ -1,0 +1,10 @@
+I think FT_findNode should have a checker for files and directories
+and we can add an argument that differentiates if we are looking for a
+file or directory. (0 for directory, 1 for file)
+
+have to fix Node_getType and access it only when we can, handle corner cases
+whenever looking at children, check if it is file or directory.
+
+insertFile 
+    - actions inside while loop happen at evey level
+    - we just want to insert file at end of oppath. 

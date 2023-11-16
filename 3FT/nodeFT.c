@@ -27,22 +27,6 @@ struct node {
    void *pvContent; 
 
 };
-int Node_getType(Node_T oNNode) {
-   return oNNode->type; 
-}
-
-void* Node_getContent(Node_T oNNode) {
-   return oNNode->pvContent;
-}
-size_t Node_getLength(Node_T oNNode) {
-   return oNNode->uLength; 
-}
-
-void Node_changeFile(Node_T oNNode, void* pvNewContents, size_t ulNewLength) {
-   oNNode->uLength = ulNewLength; 
-   oNNode->pvContent = pvNewContents; 
-}
-
 
 /*
   Links new child oNChild into oNParent's children array at index
@@ -83,8 +67,6 @@ int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
    int iStatus;
 
    assert(oPPath != NULL);
-   assert(oNParent == NULL);
-   /* assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent)); */
 
    /* allocate space for a new node */
    psNew = malloc(sizeof(struct node));
@@ -110,6 +92,11 @@ int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
       ulParentDepth = Path_getDepth(oPParentPath);
       ulSharedDepth = Path_getSharedPrefixDepth(psNew->oPPath,
                                                 oPParentPath);
+
+      if(Node_getType(oNParent) == 1) {
+        return NOT_A_DIRECTORY; 
+       }   
+
       /* parent must be an ancestor of child */
       if(ulSharedDepth < ulParentDepth) {
          Path_free(psNew->oPPath);
@@ -170,11 +157,6 @@ int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult) {
 
    *poNResult = psNew;
 
-    assert(oNParent == NULL);
-
-   /* assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent)); 
-   assert(CheckerDT_Node_isValid(*poNResult)); */
-
    return SUCCESS;
 }
 
@@ -188,11 +170,6 @@ int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
    int iStatus;
 
    assert(oPPath != NULL);
-   assert(oNParent == NULL);
-   
-   /*
-   assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent));
-   */
 
    /* allocate space for a new node */
    psNew = malloc(sizeof(struct node));
@@ -218,6 +195,10 @@ int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
       ulParentDepth = Path_getDepth(oPParentPath);
       ulSharedDepth = Path_getSharedPrefixDepth(psNew->oPPath,
                                                 oPParentPath);
+
+      if(Node_getType(oNParent) == 1) {
+        return NOT_A_DIRECTORY; 
+       }                                         
       /* parent must be an ancestor of child */
       if(ulSharedDepth < ulParentDepth) {
          Path_free(psNew->oPPath);
@@ -268,16 +249,6 @@ int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
     psNew->uLength = uLength;
 
     psNew->pvContent = pvContent; 
-
- /*
-    
-    if(psNew->pvContent == NULL) {
-        Path_free(psNew->oPath);
-        free(psNew);
-        *poNResult = NULL;
-        return MEMORY_ERROR; 
-    }
-*/
         
     psNew->type = 1; 
 
@@ -292,13 +263,6 @@ int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult,
 
    *poNResult = psNew;
 
-    assert(oNParent == NULL); 
-
-    /*
-   assert(oNParent == NULL || CheckerDT_Node_isValid(oNParent));
-   assert(CheckerDT_Node_isValid(*poNResult));
-   */
-
    return SUCCESS;
 }
 
@@ -307,7 +271,6 @@ size_t Node_free(Node_T oNNode) {
    size_t ulCount = 0;
 
    assert(oNNode != NULL);
-   /* assert(CheckerDT_Node_isValid(oNNode)); */
 
    /* remove from parent's list */
    if(oNNode->oNParent != NULL) {
@@ -325,17 +288,8 @@ size_t Node_free(Node_T oNNode) {
       ulCount += Node_free(DynArray_get(oNNode->oDChildren, 0));
    }
 
-/*
-    if(oNode->type == 1) {
-        free(oNode->pvContent); 
-   }
-
-   */
-
-    
     DynArray_free(oNNode->oDChildren);
 
-    
    /* remove path */
    Path_free(oNNode->oPPath);
 
@@ -402,6 +356,22 @@ Node_T Node_getParent(Node_T oNNode) {
    assert(oNNode != NULL);
 
    return oNNode->oNParent;
+}
+
+int Node_getType(Node_T oNNode) {
+   return oNNode->type; 
+}
+
+void* Node_getContent(Node_T oNNode) {
+   return oNNode->pvContent;
+}
+size_t Node_getLength(Node_T oNNode) {
+   return oNNode->uLength; 
+}
+
+void Node_changeFile(Node_T oNNode, void* pvNewContents, size_t ulNewLength) {
+   oNNode->uLength = ulNewLength; 
+   oNNode->pvContent = pvNewContents; 
 }
 
 int Node_compare(Node_T oNFirst, Node_T oNSecond) {
